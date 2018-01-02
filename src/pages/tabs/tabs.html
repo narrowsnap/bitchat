@@ -1,0 +1,5 @@
+<ion-tabs [selectedIndex]="mySelectedIndex">
+  <ion-tab [root]="chatView" tabTitle="聊天" tabIcon="chatbubbles" tabBadge="{{verifiesNumberPipe(chatProvider.getChatByReceiver(username))}}" tabBadgeStyle="danger"></ion-tab>
+  <ion-tab [root]="contactView" tabTitle="通讯录" tabIcon="contacts" tabBadge="{{verifiesNumberPipe(verifyProvider.getVerifiesNumber())}}" tabBadgeStyle="danger"></ion-tab>
+  <ion-tab [root]="userView" tabTitle="我" tabIcon="person"></ion-tab>
+</ion-tabs>

@@ -1,0 +1,33 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+      <!--      <ion-list class="search">
+              <ion-item>-->
+      <ion-icon class="search" name="search" item-start></ion-icon>
+      <ion-input class="input" placeholder="搜索" type="text" [(ngModel)]="searchInfo">
+      </ion-input>
+      <!--        </ion-item>
+            </ion-list>-->
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-list *ngIf="searchInfo">
+    <ion-item (click)="search()">
+      <ion-icon name="search" item-start></ion-icon>
+      <h1>搜索: {{searchInfo}}</h1>
+    </ion-item>
+
+    <!--    <ion-item *ngIf="showInfo">
+          {{showInfo}}
+        </ion-item>-->
+  </ion-list>
+
+  <ion-list >
+
+  </ion-list>
+</ion-content>

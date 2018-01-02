@@ -1,0 +1,32 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title class="verifyTitle">
+      验证申请
+    </ion-title>
+    <button class="send" color="secondary" ion-button end (click)="sendVerify()">
+      发送
+    </button>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content style="background-color: #F5F5F5">
+  <ion-list>
+    <ion-item no-lines class="text">
+      <p>你需要发送验证申请，等对方通过</p>
+    </ion-item>
+    <ion-item>
+      <ion-input focus type="text" required [(ngModel)]="verify.verify_msg"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <!--  <ion-list>
+      <ion-item>
+        <p>为朋友设置备注</p>
+        <ion-input type="text" required [(ngModel)]="receiver"></ion-input>
+      </ion-item>
+    </ion-list>-->
+</ion-content>
+

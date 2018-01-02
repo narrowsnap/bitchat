@@ -1,0 +1,95 @@
+page-chat-detail {
+  .imgR{
+    width: 3em;
+    height: 3em;
+    float: right;
+    border-radius: 5px;
+  }
+  .speech-bubbleR {
+    //background-color: #78B743;
+    background-color: #A1CD2E;
+    border: 1px solid #c8c8c8;
+    border-radius: 5px;
+    width: 110px;
+    height: auto;
+    text-align: center;
+    padding: 10px;
+    position: absolute;
+    right: 5em
+  }
+
+
+  .speech-bubbleR .arrowR {
+    border-style: solid;
+    position: absolute;
+  }
+
+  .bottomR {
+    border-color: transparent transparent transparent #A1CD2E;
+    border-width: 8px 8px 8px 8px;
+    //bottom: -8px;
+    right: -16px
+  }
+
+  .bottomR:after {
+    border-color: transparent transparent transparent #A1CD2E;
+    border-style: solid;
+    border-width: 7px 7px 7px 7px;
+    bottom: -7px;
+    content: "";
+    position: absolute;
+    left: -8px;
+  }
+
+  .imgL{
+    width: 3em;
+    height: 3em;
+    float: left;
+    border-radius: 5px;
+  }
+  .speech-bubbleL {
+    background-color: #f8f8f8;
+    border: 1px solid #c8c8c8;
+    border-radius: 5px;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    position: absolute;
+    left: 5em;
+  }
+
+
+  .speech-bubbleL .arrowL {
+    border-style: solid;
+    position: absolute;
+  }
+
+  .bottomL {
+    border-color: transparent #c8c8c8 transparent transparent;
+    border-width: 8px 8px 8px 8px;
+    //bottom: -8px;
+    left: -16px
+  }
+
+  .bottomL:after {
+    border-color: transparent #f8f8f8 transparent transparent;
+    border-style: solid;
+    border-width: 7px 7px 7px 7px;
+    bottom: -7px;
+    content: "";
+    position: absolute;
+    left: -6px;
+  }
+
+  .words {
+    width: auto;
+    max-width: 65%;
+    word-break:break-all;
+    height: auto;
+    min-height: inherit;
+    //font-size: medium;
+    //word-wrap: break-word;
+    //white-space: pre-wrap;
+  }
+
+}

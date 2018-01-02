@@ -1,0 +1,44 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>详细信息</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content style="background-color: #F5F5F5">
+  <ion-list>
+    <ion-item>
+      <ion-thumbnail item-start>
+        <img src="{{user.img}}">
+      </ion-thumbnail>
+      <h2>{{user.username || user.nickname}}</h2>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <h2>设置备注和标签</h2>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <ion-item>
+      <h2>地区</h2>
+    </ion-item>
+
+    <ion-item>
+      <h2>个人相册</h2>
+    </ion-item>
+
+    <ion-item>
+      <h2>更多</h2>
+    </ion-item>
+  </ion-list>
+
+  <ion-list>
+    <button *ngIf="user.username" block ion-button (click)="addToContact()">添加到通讯录</button>
+    <button *ngIf="user.nickname" block ion-button (click)="chat()">发消息</button>
+  </ion-list>
+</ion-content>

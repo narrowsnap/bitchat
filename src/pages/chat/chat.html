@@ -1,0 +1,33 @@
+<!--
+  Generated template for the ChatPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title style="float: left; margin-top: .5em">比特信使</ion-title>
+
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content class="more">
+  <ion-list>
+    <ion-item *ngFor="let chat of chatProvider.getChats()" (click)="toChatDetail(chat.receiver)">
+      <div>
+        <img class="img" src="{{chat.receiver.avatar}}">
+        <h2 class="chat_with">{{chat.receiver.username}}</h2>
+        <p class="message">{{chat.contents[0].content}}</p>
+      </div>
+      <div item-right>
+        <p class="date">{{chat.contents[0].create_time | date:"H:mm"}}</p>
+        <ion-badge class="badge" color="danger">{{messagesNumberPipe(chat.new_message_number)}}</ion-badge>
+      </div>
+
+    </ion-item>
+  </ion-list>
+
+</ion-content>

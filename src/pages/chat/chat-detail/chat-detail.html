@@ -1,0 +1,33 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>{{chat_with.username}}</ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content #screen style="background-color: #F5F5F5">
+  <ion-item no-lines style="background-color: #F5F5F5"  *ngFor="let message of chat.contents">
+    <img *ngIf="message.sender != user.username" class="imgL" src="{{chat_with.avatar}}">
+    <div *ngIf="message.sender != user.username" class="speech-bubbleL words item-text-wrap">
+      <div class="arrowL bottomL"></div>
+      {{message.content}}
+    </div>
+
+    <div *ngIf="message.sender == user.username" class="speech-bubbleR words">
+      <div class="arrowR bottomR"></div>
+      {{message.content}}
+    </div>
+    <img *ngIf="message.sender == user.username" class="imgR" src="{{user.avatar}}">
+  </ion-item>
+</ion-content>
+<ion-footer class="chatPageFooter">
+  <ion-toolbar  color="white">
+    <ion-item color="white">
+      <!--<ion-textarea type="text" [(ngModel)]="content"></ion-textarea>-->
+      <ion-input type="text" autocomplete="off" [(ngModel)]="content"></ion-input>
+      <button style="width: 4em; height: 3em" ion-button item-right (click)="sendMessage()" color="secondary">发送</button>
+    </ion-item>
+  </ion-toolbar>
+</ion-footer>
