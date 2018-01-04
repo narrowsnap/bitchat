@@ -24,11 +24,11 @@
   <ion-list>
     <ion-item *ngFor="let verify of verifies">
       <ion-thumbnail item-start>
-        <img src="{{verify.sender_avatar}}">
+        <img src="{{url + verify.sender_avatar}}">
       </ion-thumbnail>
       <h2>{{verify.sender}}</h2>
-      <p>{{verify.verifyMsg}}</p>
-      <button ion-button item-end (click)="agreeVerify(verify._id)">同意</button>
+      <p>{{verify.verify_msg}}</p>
+      <button ion-button item-end (click)="agreeVerify(verify)">同意</button>
       <button ion-button item-end (click)="disagreeVerify(verify._id)">拒绝</button>
     </ion-item>
   </ion-list>

@@ -6,6 +6,7 @@ import { Storage } from '@ionic/storage';
 import { SocketProvider } from "../../../providers/socket/socket";
 import { UserProvider } from "../../../providers/user/user";
 import { ChatProvider } from "../../../providers/chat/chat";
+import { HTTP_HOST } from "../../../providers/config";
 import { Message } from '../../../models/message.model';
 import { Chat } from '../../../models/chat.model';
 import { User } from '../../../models/user.model';
@@ -24,6 +25,7 @@ import { User } from '../../../models/user.model';
 export class ChatDetailPage implements OnInit {
   @ViewChild('txtChat') txtChat: any;
   @ViewChild('screen') screen: any;
+  url: string = HTTP_HOST;
   chat: Chat = new Chat();
   message: Message = new Message();
   content: string;
@@ -44,13 +46,12 @@ export class ChatDetailPage implements OnInit {
     this.chat_with = this.navParams.get('user');
   }
 
-  async ngOnInit() {
+  ngOnInit() {
     this.user = this.userProvider.getUser();
     if(this.chatProvider.getChatByReceiver(this.chat_with.username)) {
       this.chat = this.chatProvider.getChatByReceiver(this.chat_with.username);
     }
     this.receiveMessage();
-
   }
 
   ionViewWillEnter() {
@@ -65,7 +66,7 @@ export class ChatDetailPage implements OnInit {
   sendMessage() {
     if(this.content) {
       this.scrollToBottom();
-      const message = new Message();
+      let message = new Message();
       message.sender = this.user.username;
       message.receiver = this.chat_with.username;
       message.content = this.content;
@@ -87,9 +88,11 @@ export class ChatDetailPage implements OnInit {
   receiveMessage() {
     this.socketProvider.receiveMessage()
       .subscribe(
-        message => {
+        data => {
           // 往chat数组里面push message
-          // this.chat.contents.push(message);
+          console.log(data);
+          this.receive_message = data;
+          this.chat.contents.push(this.receive_message);
           console.log(this.chat);
           this.changeDetectorRef.detectChanges();
           this.scrollToBottom();

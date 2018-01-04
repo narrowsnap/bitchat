@@ -6,6 +6,8 @@ import { Verify } from '../../../models/verify.model';
 import { UserProvider } from '../../../providers/user/user';
 import { VerifyProvider } from '../../../providers/verify/verify';
 import { AlertProvider } from '../../../providers/alert/alert';
+import { SocketProvider } from '../../../providers/socket/socket';
+import { HTTP_HOST } from '../../../providers/config';
 
 /**
  * Generated class for the AddFriendPage page.
@@ -21,6 +23,7 @@ import { AlertProvider } from '../../../providers/alert/alert';
 export class NewFriendPage {
   user: User = new User('', '', '');
   verifies: Verify[] = [];
+  url: string = HTTP_HOST;
 
   constructor(
     public navCtrl: NavController,
@@ -29,6 +32,7 @@ export class NewFriendPage {
     private userProvider: UserProvider,
     private verifyProvider: VerifyProvider,
     private alertProvider: AlertProvider,
+    private socketProvider: SocketProvider,
   ) {
   }
 
@@ -47,12 +51,14 @@ export class NewFriendPage {
   }
 
   // 同意申请
-  agreeVerify(verify_id: string) {
-    this.verifyProvider.agreeVerify(verify_id)
+  agreeVerify(verify: Verify) {
+    this.verifyProvider.agreeVerify(verify._id)
       .subscribe(
         () => {
           // 更新用户信息
           this.userProvider.updateUser();
+          // 通知申请方
+          this.socketProvider.noticeSender(verify.sender);
           // 更新申请信息
           this.verifyProvider.updateVerify().then(
             () => {
@@ -91,7 +97,7 @@ export class NewFriendPage {
   presentLoading() {
     let loader = this.loadingCtrl.create({
       content: "正在添加联系人...",
-      duration: 2000
+      duration: 1000
     });
     loader.present();
   }

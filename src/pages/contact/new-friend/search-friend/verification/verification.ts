@@ -59,7 +59,7 @@ export class VerificationPage {
       .subscribe(
         data => {
           if(data.status == 200) {
-            this.socketProvider.sendVerify(this.receiver);
+            this.socketProvider.sendVerify(this.verify.receiver);
             this.alertProvider.showToast(data.message);
           } else {
             this.alertProvider.showAlert(' ',data.message)

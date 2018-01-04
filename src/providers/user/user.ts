@@ -21,7 +21,7 @@ export class UserProvider {
 
   constructor(
     public http: Http,
-    private storage: Storage
+    private storage: Storage,
   ) {
 
   }
@@ -152,6 +152,16 @@ export class UserProvider {
       }
       currentContacts.push(contact);
     }
+  }
+
+  // 是否是好友
+  isContacted(username: string) {
+    for(let contact of this.user.contacts) {
+      if(contact.username == username) {
+        return true;
+      }
+    }
+    return false;
   }
 
 

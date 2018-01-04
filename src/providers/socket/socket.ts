@@ -47,10 +47,9 @@ export class SocketProvider {
   }
 
   receiveMessage() {
-    // console.log('username: ' + username);
     let observable = new Observable(observer => {
       this.socket.on('receive message', (message) => {
-        if(message.receiver == this.username) {
+        if(message.receiver == this.userProvider.getUser().username) {
           observer.next(message);
         }
       });
@@ -79,7 +78,9 @@ export class SocketProvider {
   receiveVerify() {
     let observable = new Observable(observer => {
       this.socket.on('receive verify', (msg) => {
-        if(msg == this.username) {
+        console.log(msg);
+        console.log(this.userProvider.getUser().username)
+        if(msg == this.userProvider.getUser().username) {
           observer.next(1)
         }
       });
@@ -87,6 +88,20 @@ export class SocketProvider {
     return observable;
   }
 
+  // 通知申请方
+  noticeSender(sender: string) {
+    this.socket.emit('notice sender', sender);
+  }
 
+  receiveNotice() {
+    let observable = new Observable(observer => {
+      this.socket.on('receive notice', (msg) => {
+        if(msg == this.userProvider.getUser().username) {
+          observer.next(1)
+        }
+      });
+    });
+    return observable;
+  }
 
 }

@@ -11,9 +11,9 @@
   <ion-list>
     <ion-item>
       <ion-thumbnail item-start>
-        <img src="{{user.img}}">
+        <img src="{{url + user.avatar}}">
       </ion-thumbnail>
-      <h2>{{user.username || user.nickname}}</h2>
+      <h2>{{user.username}}</h2>
     </ion-item>
   </ion-list>
 
@@ -38,7 +38,7 @@
   </ion-list>
 
   <ion-list>
-    <button *ngIf="user.username" block ion-button (click)="addToContact()">添加到通讯录</button>
-    <button *ngIf="user.nickname" block ion-button (click)="chat()">发消息</button>
+    <button *ngIf="!is_contacted" block ion-button (click)="addToContact()">添加到通讯录</button>
+    <button *ngIf="is_contacted" block ion-button (click)="chat()">发消息</button>
   </ion-list>
 </ion-content>

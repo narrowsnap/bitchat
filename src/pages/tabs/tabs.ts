@@ -41,6 +41,7 @@ export class TabsPage implements OnInit {
   ngOnInit() {
     this.username = this.userProvider.getUser().username;
     this.receiveVerify();
+    this.receiveNotice();
   }
 
   ionViewWillEnter() {
@@ -85,6 +86,19 @@ export class TabsPage implements OnInit {
 
   verifiesNumberPipe(verifiesNumber) {
     return (verifiesNumber == 0) ? null : verifiesNumber;
+  }
+
+  receiveNotice() {
+    this.socketProvider.receiveNotice()
+      .subscribe(
+        data => {
+          console.log(data);
+          this.userProvider.updateUser();
+        },
+        err => {
+          console.log(err);
+        }
+      )
   }
 
 }

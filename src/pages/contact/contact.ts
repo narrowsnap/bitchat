@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
-import { Storage } from '@ionic/storage';
 
 import { User } from '../../models/user.model';
 import { UserProvider } from '../../providers/user/user';
 import { VerifyProvider } from '../../providers/verify/verify';
+import { HTTP_HOST } from '../../providers/config';
 /**
  * Generated class for the ContactPage page.
  *
@@ -18,6 +18,7 @@ import { VerifyProvider } from '../../providers/verify/verify';
 })
 export class ContactPage{
   contacts: any;
+  url: string = HTTP_HOST;
 
   groupedContacts: any = [];
 
