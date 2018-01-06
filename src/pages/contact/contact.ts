@@ -49,6 +49,10 @@ export class ContactPage{
     });
   }
 
+  toGroupChat() {
+    this.app.getRootNavs()[0].push('GroupChatPage');
+  }
+
   verifiesNumberPipe(verifiesNumber) {
     return (verifiesNumber == 0) ? null : verifiesNumber;
   }

@@ -41,4 +41,5 @@ export class UserPage {
     this.app.getRootNav().push('SettingPage');
   }
 
+
 }

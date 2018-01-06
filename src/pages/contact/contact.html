@@ -21,7 +21,7 @@
       <ion-badge color="danger" item-right>{{verifiesNumberPipe(verifyProvider.getVerifiesNumber())}}</ion-badge>
     </ion-item>
 
-    <ion-item>
+    <ion-item (click)="toGroupChat()">
       <ion-icon name="people" item-start></ion-icon>
       <h2>群聊</h2>
     </ion-item>

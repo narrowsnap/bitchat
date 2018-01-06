@@ -9,6 +9,7 @@ import { SplashScreen } from '@ionic-native/splash-screen';
 import { SocketProvider } from '../providers/socket/socket';
 import { UserProvider } from '../providers/user/user';
 import { VerifyProvider } from '../providers/verify/verify';
+import { ChatProvider } from '../providers/chat/chat';
 
 @Component({
   templateUrl: 'app.html'
@@ -24,6 +25,7 @@ export class MyApp {
     private socketProvider: SocketProvider,
     private userProvider: UserProvider,
     private verifyProvider: VerifyProvider,
+    private chatProvider: ChatProvider,
   ) {
     this.storage.get('hasSeenTutorial')
       .then((hasSeenTutorial) => {
@@ -32,6 +34,7 @@ export class MyApp {
         } else {
           this.userProvider.init();
           this.verifyProvider.init();
+          this.chatProvider.init();
           this.rootPage = 'TabsPage';
         }
         this.platformReady();

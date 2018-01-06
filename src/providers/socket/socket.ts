@@ -8,6 +8,7 @@ import * as io from 'socket.io-client';
 import { SOCKET_HOST } from '../config';
 import { Message } from '../../models/message.model';
 import { UserProvider } from '../user/user';
+import { ChatProvider } from '../chat/chat';
 
 @Injectable()
 export class SocketProvider {
@@ -21,7 +22,8 @@ export class SocketProvider {
   constructor(
     public http: Http,
     private storage: Storage,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private chatProvider: ChatProvider
   ) {
     this.newMessage = Observable.create(observer => {
       this.socketObserver = observer;
@@ -47,6 +49,17 @@ export class SocketProvider {
   }
 
   receiveMessage() {
+    let observable = new Observable(observer => {
+      this.socket.on('receive message', (message) => {
+        if(message.receiver == this.userProvider.getUser().username) {
+          observer.next(message);
+        }
+      });
+    });
+    return observable;
+  }
+
+  chatsChanged() {
     let observable = new Observable(observer => {
       this.socket.on('receive message', (message) => {
         if(message.receiver == this.userProvider.getUser().username) {

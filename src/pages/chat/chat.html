@@ -18,12 +18,12 @@
   <ion-list>
     <ion-item *ngFor="let chat of chatProvider.getChats()" (click)="toChatDetail(chat.receiver)">
       <div>
-        <img class="img" src="{{chat.receiver.avatar}}">
+        <img class="img" src="{{url + chat.receiver.avatar}}">
         <h2 class="chat_with">{{chat.receiver.username}}</h2>
-        <p class="message">{{chat.contents[0].content}}</p>
+        <p class="message">{{chat.contents[chat.contents.length-1].content}}</p>
       </div>
       <div item-right>
-        <p class="date">{{chat.contents[0].create_time | date:"H:mm"}}</p>
+        <p class="date">{{chat.contents[chat.contents.length-1].create_time | date:"H:mm"}}</p>
         <ion-badge class="badge" color="danger">{{messagesNumberPipe(chat.new_message_number)}}</ion-badge>
       </div>
 

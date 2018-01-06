@@ -42,6 +42,7 @@ export class TabsPage implements OnInit {
     this.username = this.userProvider.getUser().username;
     this.receiveVerify();
     this.receiveNotice();
+    this.receiveMessage();
   }
 
   ionViewWillEnter() {
@@ -68,7 +69,7 @@ export class TabsPage implements OnInit {
 
   // 加载 好友申请 信息
   async updateVerifyNumber() {
-    let verifyNumber = await this.verifyProvider.updateVerify();
+    await this.verifyProvider.updateVerify();
   }
 
   //  监听好友申请
@@ -94,6 +95,20 @@ export class TabsPage implements OnInit {
         data => {
           console.log(data);
           this.userProvider.updateUser();
+        },
+        err => {
+          console.log(err);
+        }
+      )
+  }
+
+  receiveMessage() {
+    this.socketProvider.receiveMessage()
+      .subscribe(
+        message => {
+          // 往chat数组里面push message
+          console.log(message);
+          this.chatProvider.updateChats(message, false);
         },
         err => {
           console.log(err);

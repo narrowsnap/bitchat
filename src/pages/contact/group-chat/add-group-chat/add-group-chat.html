@@ -1,0 +1,30 @@
+<!--
+  Generated template for the AddGroupChatPage page.
+
+  See http://ionicframework.com/docs/components/#navigation for more info on
+  Ionic pages and navigation.
+-->
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>
+      发起群聊
+      <button ion-button color="#A1CD2E" style="margin-left: 80%">确定</button>
+    </ion-title>
+  </ion-navbar>
+
+</ion-header>
+
+
+<ion-content>
+  <ion-item-group *ngFor="let user of users; let i=index" [attr.data-index]="i">
+    <ion-item-divider style="background-color: #F5F5F5">{{user.group.letter}}</ion-item-divider>
+    <ion-item *ngFor="let contact of user.group.contacts">
+      <img class="img" src="{{url + contact.avatar}}">
+      <h2 class="nickname">{{contact.username}}</h2>
+      <ion-icon *ngIf="!user.selected" (click)="toggle(i)"  name="ios-checkbox-outline" style="font-size: 30px; position: absolute; top: 30%; left: 90%"></ion-icon>
+      <ion-icon *ngIf="user.selected" (click)="toggle(i)" ios="ios-checkbox" md="md-checkbox" style="color: #A1CD2E; font-size: 30px; position: absolute; top: 30%; left: 90%"></ion-icon>
+    </ion-item>
+
+  </ion-item-group>
+</ion-content>

@@ -164,5 +164,12 @@ export class UserProvider {
     return false;
   }
 
+  getUserContact(username: string) {
+    for(let contact of this.user.contacts) {
+      if(username == contact.username) {
+        return new User(contact._id, contact.username, contact.avatar);
+      }
+    }
+  }
 
 }

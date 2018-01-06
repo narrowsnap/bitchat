@@ -2,6 +2,8 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, AlertController } from 'ionic-angular';
 import { Storage } from '@ionic/storage';
 
+import { ChatProvider } from '../../providers/chat/chat';
+
 /**
  * Generated class for the SettingPage page.
  *
@@ -19,7 +21,8 @@ export class SettingPage {
     public navCtrl: NavController,
     public navParams: NavParams,
     public alertCtrl: AlertController,
-    private storage: Storage
+    private storage: Storage,
+    private chatProvider: ChatProvider
   ) {
     console.log('Hello SettingComponent Component');
   }
@@ -32,15 +35,9 @@ export class SettingPage {
         {
           text: '确认',
           handler: () => {
-            this.storage.get('userInfo')
-              .then((userInfo) => {
-                if(!userInfo) {
-                  this.navCtrl.setRoot('LoginPage');
-                } else {
-                  this.storage.clear();
-                  this.navCtrl.setRoot('LoginPage');
-                }
-              });
+            this.storage.clear();
+            this.chatProvider.clear();
+            this.navCtrl.setRoot('LoginPage');
           }
         },
         {

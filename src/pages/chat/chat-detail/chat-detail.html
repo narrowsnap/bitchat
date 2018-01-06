@@ -1,11 +1,22 @@
-<ion-header>
-  <ion-icon name="back"></ion-icon>
-  <ion-title>{{chat_with.username}}</ion-title>
+<!--<ion-header>
+  <ion-navbar>
+    <ion-title>{{chat_with.username}}</ion-title>
+  </ion-navbar>
+  &lt;!&ndash;<ion-icon name="arrow-left"></ion-icon>&ndash;&gt;
+</ion-header>-->
+<ion-header style="font-size:1.7em;color:#333;" text-center>
+  <!--<ion-icon name="ios-arrow-back" float-left margin-left style="padding-top:8px; padding-bottom:8px;cursor:pointer" (click)='goBack()'></ion-icon>
+  <span style="font-size:0.7em;vertical-align:middle;">{{shop_info.shop_name}}</span>-->
+  <ion-navbar hideBackButton="true">
+    <ion-icon name="ios-arrow-back" float-left  style="cursor:pointer;padding-left:16px;padding-right:32px;margin-left:0;" (click)='goBack()'></ion-icon>
+    <ion-title>{{chat_with.username}}</ion-title>
+  </ion-navbar>
+  <!-- <ion-icon name="ios-share-outline" float-right margin-right style="padding-top:8px; padding-bottom:8px;cursor:pointer"></ion-icon> -->
 </ion-header>
 
 
 <ion-content #screen style="background-color: #F5F5F5">
-  <ion-item no-lines style="background-color: #F5F5F5"  *ngFor="let message of chat.contents">
+  <ion-item no-lines style="background-color: #F5F5F5"  *ngFor="let message of chatProvider.getChatByReceiver(user, chat_with).contents" (ngChange)="test()">
     <img *ngIf="message.sender != user.username" class="imgL" src="{{url + chat_with.avatar}}">
     <div *ngIf="message.sender != user.username" class="speech-bubbleL words item-text-wrap">
       <div class="arrowL bottomL"></div>

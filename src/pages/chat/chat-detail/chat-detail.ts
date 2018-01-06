@@ -26,17 +26,14 @@ export class ChatDetailPage implements OnInit {
   @ViewChild('txtChat') txtChat: any;
   @ViewChild('screen') screen: any;
   url: string = HTTP_HOST;
-  chat: Chat = new Chat();
   message: Message = new Message();
   content: string;
   user: User = new User('', '', '');
   chat_with: User = new User('', '', '');
-  receive_message: any;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private storage: Storage,
     public _zone: NgZone,
     private socketProvider: SocketProvider,
     private userProvider: UserProvider,
@@ -48,19 +45,20 @@ export class ChatDetailPage implements OnInit {
 
   ngOnInit() {
     this.user = this.userProvider.getUser();
-    if(this.chatProvider.getChatByReceiver(this.chat_with.username)) {
-      this.chat = this.chatProvider.getChatByReceiver(this.chat_with.username);
-    }
-    this.receiveMessage();
+    // this.receiveMessage();
+    this.chatsChanged();
   }
 
   ionViewWillEnter() {
+    this.changeDetectorRef.detectChanges();
+    this.scrollToBottom();
   }
 
   // 之后重写进 back 方法
-  ionViewWillLeave() {
-    console.log('ionViewWillLeave');
-    this.chatProvider.setChats(this.chat);
+  goBack() {
+    // this.chatProvider.setChats(this.chat);
+    this.chatProvider.clearMessagesNumber(this.chat_with.username);
+    this.navCtrl.setRoot('TabsPage');
   }
 
   sendMessage() {
@@ -73,11 +71,14 @@ export class ChatDetailPage implements OnInit {
       message.create_time = Date.now();
 
       // 往chat数组里面push message
-      if(!this.chat.sender.username) {
+/*      if(!this.chat.sender.username) {
         this.chat.sender = this.user;
         this.chat.receiver = this.chat_with;
       }
-      this.chat.contents.push(message);
+      this.chat.contents.push(message);*/
+      this.chatProvider.updateChats(message, true);
+      this.changeDetectorRef.detectChanges();
+      this.scrollToBottom();
 
       this.socketProvider.sendMessage(message);
       this.content = '';
@@ -85,15 +86,11 @@ export class ChatDetailPage implements OnInit {
 
   }
 
-  receiveMessage() {
+/*  receiveMessage() {
     this.socketProvider.receiveMessage()
       .subscribe(
-        data => {
+        () => {
           // 往chat数组里面push message
-          console.log(data);
-          this.receive_message = data;
-          this.chat.contents.push(this.receive_message);
-          console.log(this.chat);
           this.changeDetectorRef.detectChanges();
           this.scrollToBottom();
         },
@@ -101,7 +98,7 @@ export class ChatDetailPage implements OnInit {
           console.log(err);
         }
       )
-  }
+  }*/
 
   scrollToBottom() {
     this._zone.run(() => {
@@ -131,5 +128,22 @@ export class ChatDetailPage implements OnInit {
     }
   }
 
+  test() {
+    console.log('change');
+  }
+
+  chatsChanged() {
+    this.socketProvider.chatsChanged()
+      .subscribe(
+        () => {
+          // 往chat数组里面push message
+          this.changeDetectorRef.detectChanges();
+          this.scrollToBottom();
+        },
+        err => {
+          console.log(err);
+        }
+      )
+  }
 
 }
