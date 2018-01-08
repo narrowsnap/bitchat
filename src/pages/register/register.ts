@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import simplePinYin from 'simple-pinyin';
 
 import { UserProvider } from '../../providers/user/user';
 import { AlertProvider } from '../../providers/alert/alert'
@@ -39,8 +40,9 @@ export class RegisterPage {
     } else {
       this.info = '';
       if(this.password == this.sure) {
+        let pinyin = simplePinYin(this.username, {pinyinOnly: false})[0]
         // console.log('start')
-        this.userProvider.register(this.username, this.password)
+        this.userProvider.register(this.username, this.password, pinyin)
           .subscribe(
             data => {
               if(data.status == 200) {

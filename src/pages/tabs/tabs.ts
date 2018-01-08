@@ -43,6 +43,7 @@ export class TabsPage implements OnInit {
     this.receiveVerify();
     this.receiveNotice();
     this.receiveMessage();
+    this.updateInfo();
   }
 
   ionViewWillEnter() {
@@ -109,6 +110,18 @@ export class TabsPage implements OnInit {
           // 往chat数组里面push message
           console.log(message);
           this.chatProvider.updateChats(message, false);
+        },
+        err => {
+          console.log(err);
+        }
+      )
+  }
+
+  updateInfo() {
+    this.socketProvider.updateInfo()
+      .subscribe(
+        () => {
+          this.userProvider.updateUser();
         },
         err => {
           console.log(err);

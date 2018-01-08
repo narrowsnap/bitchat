@@ -30,6 +30,8 @@ export class ChatDetailPage implements OnInit {
   content: string;
   user: User = new User('', '', '');
   chat_with: User = new User('', '', '');
+  is_group_chat: boolean = false;
+  group_chat: any;
 
   constructor(
     public navCtrl: NavController,
@@ -40,7 +42,12 @@ export class ChatDetailPage implements OnInit {
     private chatProvider: ChatProvider,
     private changeDetectorRef: ChangeDetectorRef
   ) {
-    this.chat_with = this.navParams.get('user');
+    if(this.navParams.get('group_chat')) {
+      this.group_chat = this.navParams.get('chat');
+      this.is_group_chat = true;
+    } else {
+      this.chat_with = this.navParams.get('user');
+    }
   }
 
   ngOnInit() {
@@ -66,7 +73,16 @@ export class ChatDetailPage implements OnInit {
       this.scrollToBottom();
       let message = new Message();
       message.sender = this.user.username;
-      message.receiver = this.chat_with.username;
+      if(this.is_group_chat) {
+        for(let member of this.group_chat.members) {
+          if(member.username != this.user.username) {
+            message.members.push(member.username);
+          }
+        }
+      } else {
+        message.receiver = this.chat_with.username;
+      }
+      message.sender_avatar = this.user.avatar;
       message.content = this.content;
       message.create_time = Date.now();
 

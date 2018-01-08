@@ -40,7 +40,7 @@ export class UserProvider {
   setUser(user) {
     this.user = user;
     this.groupContacts(user.contacts);
-    this.storage.set('user', user).then()
+    this.storage.set('user', user).then();
   }
 
   // 获取用户信息
@@ -71,9 +71,9 @@ export class UserProvider {
   }
 
   // 用户注册
-  register(username: string, password: string) {
+  register(username: string, password: string, pinyin: string) {
     return this.http.post(this.url + 'register',
-      {username: username, password: password})
+      {username: username, password: password, pinyin: pinyin})
       .map(res => res.json())
   }
 
@@ -170,6 +170,33 @@ export class UserProvider {
         return new User(contact._id, contact.username, contact.avatar);
       }
     }
+  }
+
+  addGroupChat(group_members: any) {
+    let group_chat_name = this.user.username;
+    for(let member of group_members) {
+      group_chat_name = group_chat_name + ', ' + member.username;
+    }
+    group_members.push({
+      _id: this.user._id,
+      username: this.user.username,
+      avatar: this.user.avatar,
+      pinyin: this.user.pinyin
+    });
+    console.log(group_members);
+    this.user.group_chat.push({
+      name: group_chat_name,
+      avatar: this.user.avatar,
+      members: group_members
+    });
+    this.storage.set('user', this.user).then();
+    return this.http.post(this.url + 'addGroupChat',
+      {group_chat_name: group_chat_name, avatar: this.user.avatar, group_members: group_members})
+      .map(res => res.json())
+  }
+
+  getGroupChat() {
+    return this.user.group_chat;
   }
 
 }

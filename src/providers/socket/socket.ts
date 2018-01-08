@@ -51,6 +51,7 @@ export class SocketProvider {
   receiveMessage() {
     let observable = new Observable(observer => {
       this.socket.on('receive message', (message) => {
+        console.log(message);
         if(message.receiver == this.userProvider.getUser().username) {
           observer.next(message);
         }
@@ -91,8 +92,6 @@ export class SocketProvider {
   receiveVerify() {
     let observable = new Observable(observer => {
       this.socket.on('receive verify', (msg) => {
-        console.log(msg);
-        console.log(this.userProvider.getUser().username)
         if(msg == this.userProvider.getUser().username) {
           observer.next(1)
         }
@@ -111,6 +110,23 @@ export class SocketProvider {
       this.socket.on('receive notice', (msg) => {
         if(msg == this.userProvider.getUser().username) {
           observer.next(1)
+        }
+      });
+    });
+    return observable;
+  }
+
+  groupChatSocket(members_name) {
+    this.socket.emit('group chat', members_name);
+  }
+
+  updateInfo() {
+    let observable = new Observable(observer => {
+      this.socket.on('update info', (members_name) => {
+        for(let member of members_name) {
+          if(member == this.userProvider.getUser().username) {
+            observer.next()
+          }
         }
       });
     });

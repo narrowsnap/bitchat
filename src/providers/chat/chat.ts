@@ -20,6 +20,7 @@ import { UserProvider } from '../user/user';
 export class ChatProvider {
   chats: Chat[] = [];
   status: boolean = false;
+  all_message_number: number = 0;
 
   constructor(
     public http: Http,
@@ -37,7 +38,9 @@ export class ChatProvider {
       .then(chats => {
         if(chats) {
           this.chats = chats;
-          console.log(this.chats);
+          for(let chat of this.chats) {
+            this.all_message_number += chat.new_message_number;
+          }
         }
       })
   }
@@ -51,6 +54,10 @@ export class ChatProvider {
       }
     }
     return chats;
+  }
+
+  getAllMessageNumber() {
+    return this.all_message_number;
   }
 
   setChats(chat) {
@@ -81,6 +88,22 @@ export class ChatProvider {
     return chat;
   }
 
+  // 获取群聊天记录
+  getChatByGroup(sender: User, group_chat: any) {
+    for(let chat of this.chats) {
+      if(chat.group_chat_name == group_chat.name) {
+        return chat;
+      }
+    }
+    let chat = new Chat();
+    chat.sender = sender;
+    chat.members = group_chat.members;
+    chat.group_chat_name = group_chat.name;
+    this.chats.push(chat);
+    console.log(this.chats);
+    return chat;
+  }
+
 
   clear() {
     this.chats = [];
@@ -96,17 +119,24 @@ export class ChatProvider {
         if(message.sender == this.chats[i].receiver.username) {
           this.chats[i].contents.push(message);
           this.chats[i].new_message_number++;
+          this.all_message_number++;
         }
       }
       this.storage.set('chats', this.chats);
       return;
     }
-
-    let sender = this.userProvider.getUser();
-    let receiver = this.userProvider.getUserContact(message.sender);
     let chat = new Chat();
+    let sender = this.userProvider.getUser();
+    if(message.members.length != 0) {
+      for(let member of message.members) {
+        let receiver = this.userProvider.getUserContact(member);
+        chat.members.push(receiver);
+      }
+    } else {
+      let receiver = this.userProvider.getUserContact(message.sender);
+      chat.receiver = receiver;
+    }
     chat.sender = sender;
-    chat.receiver = receiver;
     chat.contents.push(message);
     chat.new_message_number = 1;
     this.chats.push(chat);
@@ -114,10 +144,15 @@ export class ChatProvider {
   }
 
   clearMessagesNumber(username: string) {
+    console.log('clearMessagesNumber')
     for(let i in this.chats) {
       if(this.chats[i].receiver.username == username) {
         this.chats[i].new_message_number = 0;
         this.storage.set('chats', this.chats);
+        this.all_message_number = 0;
+        for(let chat of this.chats) {
+          this.all_message_number += chat.new_message_number;
+        }
         return;
       }
     }

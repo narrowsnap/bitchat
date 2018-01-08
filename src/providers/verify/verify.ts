@@ -59,6 +59,7 @@ export class VerifyProvider {
         .subscribe(
           data => {
             this.verifies = data.verifies;
+            console.log(this.verifies);
             this.storage.set('verifies', data.verifies);
             resolve(this.getVerifiesNumber());
           },

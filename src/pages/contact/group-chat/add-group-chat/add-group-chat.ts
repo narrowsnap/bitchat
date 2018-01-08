@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
 
 import { UserProvider } from '../../../../providers/user/user';
+import { SocketProvider } from '../../../../providers/socket/socket';
 import { HTTP_HOST } from '../../../../providers/config';
 
 /**
@@ -17,28 +18,66 @@ import { HTTP_HOST } from '../../../../providers/config';
 })
 export class AddGroupChatPage {
   url: string = HTTP_HOST;
-  users = [];
+  groups = [];
+  selected: boolean[][] = [];
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private userProvider: UserProvider
+    private userProvider: UserProvider,
+    private socketProvider: SocketProvider,
   ) {
   }
 
   ionViewDidLoad() {
-    for(let group of this.userProvider.getGroupContacts()) {
-      let user = {
-        group: group,
-        selected: false
-      };
-      this.users.push(user);
+    this.selected[0] = [];
+    this.selected.push([]);
+    this.groups = this.userProvider.getGroupContacts();
+    for(let i in this.groups) {
+      for(let j in this.groups[i].contacts) {
+        this.selected[i][j] = false;
+      }
     }
+    console.log(this.selected);
     console.log('ionViewDidLoad AddGroupChatPage');
   }
 
-  toggle(index) {
-    this.users[index].selected = !this.users[index].selected;
+  toggle(i, j) {
+    this.selected[i][j] = !this.selected[i][j];
+  }
+
+  canClick() {
+    for(let i in this.selected){
+      for(let j in this.selected[i]) {
+        if(this.selected[i][j]) {
+          return false;
+        }
+      }
+    }
+    return true;
+  }
+
+  submit() {
+    let group_members = [];
+    let members_name = [];
+    for(let i in this.selected) {
+      for(let j in this.selected[i]) {
+        if(this.selected[i][j]) {
+          group_members.push(this.groups[i].contacts[j]);
+          members_name.push(this.groups[i].contacts[j].username);
+        }
+      }
+    }
+    this.userProvider.addGroupChat(group_members)
+      .subscribe(
+        data => {
+          console.log(data);
+          this.socketProvider.groupChatSocket(members_name)
+        },
+        err => {
+          console.log(err)
+        }
+      )
   }
 
 }

@@ -1,6 +1,9 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
 
+import { UserProvider } from '../../../providers/user/user';
+import { HTTP_HOST } from '../../../providers/config';
+
 /**
  * Generated class for the GroupChatPage page.
  *
@@ -13,20 +16,28 @@ import { IonicPage, NavController, NavParams, App } from 'ionic-angular';
   templateUrl: 'group-chat.html',
 })
 export class GroupChatPage {
+  url: string = HTTP_HOST;
 
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
-    private app: App
+    private app: App,
+    private userProvider: UserProvider
   ) {
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad GroupChatPage');
   }
 
   toAddGroupChat() {
     this.app.getRootNavs()[0].push('AddGroupChatPage');
+  }
+
+  toChatDetail(chat: any) {
+    this.app.getRootNav().push('ChatDetailPage', {
+      group_chat: true,
+      chat: chat
+    })
   }
 
 }
