@@ -107,6 +107,7 @@ export class ChatProvider {
 
   clear() {
     this.chats = [];
+    this.all_message_number = 0;
   }
 
   updateChats(message: any, local: boolean) {
@@ -127,7 +128,7 @@ export class ChatProvider {
     }
     let chat = new Chat();
     let sender = this.userProvider.getUser();
-    if(message.members.length != 0) {
+/*    if(message.members.length != 0) {
       for(let member of message.members) {
         let receiver = this.userProvider.getUserContact(member);
         chat.members.push(receiver);
@@ -135,7 +136,9 @@ export class ChatProvider {
     } else {
       let receiver = this.userProvider.getUserContact(message.sender);
       chat.receiver = receiver;
-    }
+    }*/
+    let receiver = this.userProvider.getUserContact(message.sender);
+    chat.receiver = receiver;
     chat.sender = sender;
     chat.contents.push(message);
     chat.new_message_number = 1;

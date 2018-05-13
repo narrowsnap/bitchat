@@ -30,6 +30,11 @@
       <ion-icon name="contacts" item-start></ion-icon>
       <h2>公众号(暂未实现)</h2>
     </ion-item>
+
+    <ion-item (click)="chat()">
+      <ion-icon name="contacts" item-start></ion-icon>
+      <h2 >聊天机器人</h2 >
+    </ion-item>
   </ion-list>
 
   <ion-item-group *ngFor="let group of userProvider.getGroupContacts()">

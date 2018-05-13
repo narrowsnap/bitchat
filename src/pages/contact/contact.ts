@@ -35,7 +35,6 @@ export class ContactPage{
   }
 
   ionViewDidLoad() {
-
   }
 
   addFriend() {
@@ -55,6 +54,15 @@ export class ContactPage{
 
   verifiesNumberPipe(verifiesNumber) {
     return (verifiesNumber == 0) ? null : verifiesNumber;
+  }
+
+  chat() {
+    this.app.getRootNav().push('ChatDetailPage', {
+      user: {
+        username: 'chatbot',
+        avatar: '/images/avatar/chatbot.png'
+      }
+    })
   }
 
 }

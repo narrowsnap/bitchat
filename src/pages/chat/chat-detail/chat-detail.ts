@@ -1,7 +1,5 @@
 import { Component, NgZone, ViewChild, OnInit, ChangeDetectorRef } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
-
-import { Storage } from '@ionic/storage';
+import { IonicPage, AlertController, NavController, NavParams, Navbar } from 'ionic-angular';
 
 import { SocketProvider } from "../../../providers/socket/socket";
 import { UserProvider } from "../../../providers/user/user";
@@ -25,6 +23,7 @@ import { User } from '../../../models/user.model';
 export class ChatDetailPage implements OnInit {
   @ViewChild('txtChat') txtChat: any;
   @ViewChild('screen') screen: any;
+  @ViewChild(Navbar) navBar: Navbar;
   url: string = HTTP_HOST;
   message: Message = new Message();
   content: string;
@@ -32,6 +31,9 @@ export class ChatDetailPage implements OnInit {
   chat_with: User = new User('', '', '');
   is_group_chat: boolean = false;
   group_chat: any;
+  is_chatbot: boolean = false;
+  chatbot_message = [];
+  wait_info: boolean = false;
 
   constructor(
     public navCtrl: NavController,
@@ -40,13 +42,17 @@ export class ChatDetailPage implements OnInit {
     private socketProvider: SocketProvider,
     private userProvider: UserProvider,
     private chatProvider: ChatProvider,
-    private changeDetectorRef: ChangeDetectorRef
+    private changeDetectorRef: ChangeDetectorRef,
+    private alertCtrl: AlertController,
   ) {
     if(this.navParams.get('group_chat')) {
       this.group_chat = this.navParams.get('chat');
       this.is_group_chat = true;
     } else {
       this.chat_with = this.navParams.get('user');
+      if(this.chat_with.username == 'chatbot') {
+        this.is_chatbot = true;
+      }
     }
   }
 
@@ -54,11 +60,20 @@ export class ChatDetailPage implements OnInit {
     this.user = this.userProvider.getUser();
     // this.receiveMessage();
     this.chatsChanged();
+    this.receiveMessage();
   }
 
   ionViewWillEnter() {
-    this.changeDetectorRef.detectChanges();
+    // this.changeDetectorRef.detectChanges();
     this.scrollToBottom();
+  }
+
+  ionViewDidLoad() {
+    this.navBar.backButtonClick = (e:UIEvent)=>{
+      // todo something
+      this.chatProvider.clearMessagesNumber(this.chat_with.username);
+      this.navCtrl.setRoot('TabsPage');
+    }
   }
 
   // 之后重写进 back 方法
@@ -69,52 +84,80 @@ export class ChatDetailPage implements OnInit {
   }
 
   sendMessage() {
-    if(this.content) {
-      this.scrollToBottom();
-      let message = new Message();
-      message.sender = this.user.username;
-      if(this.is_group_chat) {
-        for(let member of this.group_chat.members) {
-          if(member.username != this.user.username) {
-            message.members.push(member.username);
-          }
+    if(this.is_chatbot) {
+      if(this.content) {
+        if(!this.wait_info) {
+          const message = new Message();
+          message.sender = this.user.username;
+          message.receiver = this.chat_with.username;
+          message.sender_avatar = this.user.avatar;
+          message.content = this.content;
+          this.chatbot_message.push(message);
+          this.scrollToBottom();
+
+          this.socketProvider.sendMessage(message);
+          this.content = '';
+          this.chatbot_message.push({
+            sender: this.chat_with.username,
+            receiver: this.user.username,
+            content: '努力计算中，请稍等......'
+          })
+          this.wait_info = true;
+        } else {
+          this.showAlert('上一个回答还在计算中，等计算完了再输入(有时间优化)')
         }
-      } else {
-        message.receiver = this.chat_with.username;
       }
-      message.sender_avatar = this.user.avatar;
-      message.content = this.content;
-      message.create_time = Date.now();
+    } else {
+      if(this.content) {
+        this.scrollToBottom();
+        let message = new Message();
+        message.sender = this.user.username;
+        if(this.is_group_chat) {
+          for(let member of this.group_chat.members) {
+            if(member.username != this.user.username) {
+              message.members.push(member.username);
+            }
+          }
+        } else {
+          message.receiver = this.chat_with.username;
+        }
+        message.sender_avatar = this.user.avatar;
+        message.content = this.content;
+        message.create_time = Date.now();
 
-      // 往chat数组里面push message
-/*      if(!this.chat.sender.username) {
-        this.chat.sender = this.user;
-        this.chat.receiver = this.chat_with;
+        // 往chat数组里面push message
+        /*      if(!this.chat.sender.username) {
+         this.chat.sender = this.user;
+         this.chat.receiver = this.chat_with;
+         }
+         this.chat.contents.push(message);*/
+        this.chatProvider.updateChats(message, true);
+        // this.changeDetectorRef.detectChanges();
+        this.scrollToBottom();
+
+        this.socketProvider.sendMessage(message);
+        this.content = '';
       }
-      this.chat.contents.push(message);*/
-      this.chatProvider.updateChats(message, true);
-      this.changeDetectorRef.detectChanges();
-      this.scrollToBottom();
-
-      this.socketProvider.sendMessage(message);
-      this.content = '';
     }
+
 
   }
 
-/*  receiveMessage() {
-    this.socketProvider.receiveMessage()
+  receiveMessage() {
+    this.socketProvider.receiveChatbotMessage()
       .subscribe(
-        () => {
+        data => {
+          this.chatbot_message.pop();
           // 往chat数组里面push message
-          this.changeDetectorRef.detectChanges();
-          this.scrollToBottom();
+          console.log('receive chatbot')
+          this.chatbot_message.push(data);
+          this.wait_info = false;
         },
         err => {
           console.log(err);
         }
       )
-  }*/
+  }
 
   scrollToBottom() {
     this._zone.run(() => {
@@ -153,13 +196,24 @@ export class ChatDetailPage implements OnInit {
       .subscribe(
         () => {
           // 往chat数组里面push message
-          this.changeDetectorRef.detectChanges();
+          // this.changeDetectorRef.detectChanges();
           this.scrollToBottom();
         },
         err => {
           console.log(err);
         }
       )
+  }
+
+  input() {
+    this.scrollToBottom();
+  }
+
+  showAlert(message: string) {
+    let alert = this.alertCtrl.create({
+      message: message,
+    });
+    alert.present();
   }
 
 }

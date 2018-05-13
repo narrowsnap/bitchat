@@ -18,6 +18,7 @@ export class SocketProvider {
   receiver: string;
   username: string;
   socketObserver: any;
+  temple: any;
 
   constructor(
     public http: Http,
@@ -45,7 +46,11 @@ export class SocketProvider {
   }
 
   sendMessage(message: Message) {
-    this.socket.emit('send message', message);
+    if(message.receiver == 'chatbot') {
+      this.socket.emit('chatbot', message);
+    } else {
+      this.socket.emit('send message', message);
+    }
   }
 
   receiveMessage() {
@@ -53,6 +58,22 @@ export class SocketProvider {
       this.socket.on('receive message', (message) => {
         console.log(message);
         if(message.receiver == this.userProvider.getUser().username) {
+          if(message.create_time != this.temple) {
+            this.temple = message.create_time;
+            observer.next(message);
+          }
+
+        }
+      });
+    });
+    return observable;
+  }
+
+  receiveChatbotMessage() {
+    let observable = new Observable(observer => {
+      this.socket.on('chatbot', (message) => {
+        if(message.receiver == this.userProvider.getUser().username) {
+          console.log(message)
           observer.next(message);
         }
       });
